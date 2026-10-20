@@ -1,0 +1,8 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "autodiscover": false,
+  "repositories": [
+    "nachatz/inference-engineering"
+  ],
+  "extends": ["config:recommended", ":disableDependencyDashboard"]
+}

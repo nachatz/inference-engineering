@@ -1,0 +1,49 @@
+bug:
+- head-branch: [bug]
+
+ci:
+- changed-files:
+  - any-glob-to-any-file: [.github/workflows/**]
+
+documentation:
+- changed-files:
+  - any-glob-to-any-file: ['**/README.md']
+
+source:
+- changed-files:
+  - any-glob-to-any-file:
+    - modules/*/app/**
+    - modules/*/model/**
+    - modules/*/examples/**
+    - modules/*/gunicorn.conf.py
+
+deploy:
+- changed-files:
+  - any-glob-to-any-file:
+    - modules/*/Dockerfile
+    - modules/*/.dockerignore
+
+bench:
+- changed-files:
+  - any-glob-to-any-file:
+    - modules/*/bench/**
+
+test:
+- changed-files:
+  - any-glob-to-any-file:
+    - modules/*/tests/**
+    - modules/*/pytest.ini
+    - modules/*/.coveragerc
+
+tools:
+- changed-files:
+  - any-glob-to-any-file:
+    - modules/*/uv.lock
+    - modules/*/pyproject.toml
+    - modules/*/mypy.ini
+    - modules/*/ruff.toml
+    - modules/*/mise.toml
+    - modules/*/justfile
+    - modules/*/justfiles/**
+    - modules/*/typings/**
+    - .gitignore

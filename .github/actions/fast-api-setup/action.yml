@@ -1,0 +1,21 @@
+name: fast-api setup
+description: The pinned tools from mise.toml and the cached virtualenv for modules/fast-api.
+
+inputs:
+  cache-key:
+    description: Which job's virtualenv cache to use.
+    required: true
+
+runs:
+  using: composite
+  steps:
+  - uses: jdx/mise-action@13abe502c30c1559a5c37dff303831bab82c9402 # v2
+    with:
+      cache: true
+      working_directory: modules/fast-api
+  - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
+    with:
+      path: modules/fast-api/.venv
+      key: ${{ runner.os }}-fast-api-${{ inputs.cache-key }}-${{ hashFiles('modules/fast-api/uv.lock') }}
+      restore-keys: |
+        ${{ runner.os }}-fast-api-${{ inputs.cache-key }}-

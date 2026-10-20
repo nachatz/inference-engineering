@@ -1,0 +1,12 @@
+# The image copies pyproject.toml, uv.lock, the justfiles, app/, model/ and gunicorn.conf.py.
+**/__pycache__
+**/*.onnx
+.venv
+.mypy_cache
+.pytest_cache
+.ruff_cache
+.coverage
+bench
+examples
+tests
+typings

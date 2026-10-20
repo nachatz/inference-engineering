@@ -1,0 +1,62 @@
+name: fast-api
+
+on:
+  push:
+    branches: [main]
+    paths: [modules/fast-api/**, .github/workflows/fast-api.yml, .github/actions/fast-api-setup/**]
+  pull_request:
+    branches: [main]
+    paths: [modules/fast-api/**, .github/workflows/fast-api.yml, .github/actions/fast-api-setup/**]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: modules/fast-api
+
+jobs:
+  fmt:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+    - uses: ./.github/actions/fast-api-setup
+      with:
+        cache-key: fmt
+    - run: just check
+
+  mypy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+    - uses: ./.github/actions/fast-api-setup
+      with:
+        cache-key: mypy
+    - run: just mypy
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+    - uses: ./.github/actions/fast-api-setup
+      with:
+        cache-key: test
+    - name: the whole suite, slow gunicorn tests included, with 100% coverage
+      run: just cov
+    - name: export the model and check it against PyTorch
+      run: just model verify
+
+  image:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+    - uses: jdx/mise-action@13abe502c30c1559a5c37dff303831bab82c9402 # v2
+      with:
+        cache: true
+        working_directory: modules/fast-api
+    - name: build, smoke test and scan the image
+      run: just image::smoke image::scan

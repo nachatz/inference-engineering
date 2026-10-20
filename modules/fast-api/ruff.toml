@@ -1,0 +1,24 @@
+line-length = 120
+
+[lint]
+# T20: no print(); everything logs through app.logger.
+extend-select = ["I", "T20"]
+
+[lint.isort]
+force-single-line = true
+section-order = [
+  "future",
+  "standard-library",
+  "third-party",
+  "first-party",
+  "local-folder",
+]
+
+# examples/ is the code from the videos, kept exactly as shown on screen: one-line imports, aligned comments.
+[lint.per-file-ignores]
+"examples/**" = ["E401", "I001"]
+# The root conftest re-exports every fixture module in tests/fixtures/.
+"tests/conftest.py" = ["F403"]
+
+[format]
+exclude = ["examples/**"]

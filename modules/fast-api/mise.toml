@@ -1,0 +1,5 @@
+[tools]
+python = "3.13"
+just = "latest"
+uv = "0.11"
+yamlfmt = "0.21.0"

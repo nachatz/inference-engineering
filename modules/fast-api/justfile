@@ -1,0 +1,45 @@
+mod app "justfiles/app.just"
+mod cmd "justfiles/cmd.just"
+mod onnx "justfiles/onnx.just"
+mod benchmarks "justfiles/benchmarks.just"
+mod examples "justfiles/examples.just"
+mod repo "justfiles/repo.just"
+mod image "justfiles/image.just"
+
+sync:
+    uv sync
+
+# Export the PyTorch model to model/model.onnx (build time: the server never imports PyTorch).
+model: cmd::export-model
+
+# Check the ONNX file matches PyTorch.
+verify: cmd::verify-model
+
+# Development server with auto-reload (works on every OS).
+dev: app::dev
+
+# Production server: gunicorn forking uvicorn workers (Linux/macOS only, gunicorn doesn't run on Windows).
+serve: app::serve
+
+# With vs without preload, 1 to 8 workers: writes bench/results/cpu-preload.{json,md}. Linux only.
+bench: cmd::preload-benchmark
+
+# Headless locust against the running server. LOAD_TEST_*: see bench/config.py.
+load-test: cmd::load-test
+
+# RSS, PSS and private memory of the running gunicorn, per process. Linux only.
+memory: cmd::memory
+
+fmt: app::fmt cmd::fmt onnx::fmt benchmarks::fmt examples::fmt repo::fmt
+
+check: app::check cmd::check onnx::check benchmarks::check examples::check repo::check
+
+mypy: app::mypy cmd::mypy onnx::mypy benchmarks::mypy
+
+test: app::test onnx::test benchmarks::test
+
+# Coverage runs the whole suite at once, since fail_under = 100 applies to everything.
+cov:
+    uv run pytest --cov --cov-report=term-missing
+
+validate: check mypy cov
